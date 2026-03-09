@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Макар: Присутствовать — значит создавать</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F3EF;
+    --bg-warm: #EDE9E3;
+    --text: #1A1A1A;
+    --text-secondary: #6B6560;
+    --accent: #8B0000;
+    --border: #D4CFC8;
+    --white: #FAFAF8;
+    --serif: 'Cormorant Garamond', 'Georgia', serif;
+    --sans: 'Inter', 'Helvetica Neue', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--white);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ========== NAV ========== */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    transition: transform 0.4s ease;
+  }
+
+  nav .logo {
+    font-family: var(--serif);
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  nav .nav-links {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+
+  nav .nav-links a {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--text-secondary);
+    transition: color 0.3s;
+    font-weight: 400;
+  }
+
+  nav .nav-links a:hover {
+    color: var(--text);
+  }
+
+  .lang-toggle {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text-secondary);
+    transition: all 0.3s;
+    font-family: var(--sans);
+  }
+
+  .lang-toggle:hover {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+
+  /* ========== HERO ========== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 120px 40px 80px;
+    position: relative;
+  }
+
+  .hero-overline {
+    font-family: var(--sans);
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.2s forwards;
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 8vw, 7.5rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.4s forwards;
+  }
+
+  .hero h1 .name {
+    display: block;
+    font-weight: 600;
+    font-style: italic;
+  }
+
+  .hero-subtitle {
+    font-family: var(--serif);
+    font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    margin-bottom: 60px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.6s forwards;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 48px;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.8s forwards;
+  }
+
+  .hero-meta .divider-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+
+  .hero-meta span {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  .scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+  }
+
+  .scroll-indicator span {
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scroll-line::after {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--accent);
+    animation: scrollDown 2s ease infinite;
+  }
+
+  /* ========== SECTIONS ========== */
+  section {
+    padding: 100px 40px;
+  }
+
+  .section-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 48px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .section-label .section-number {
+    font-family: var(--serif);
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--border);
+  }
+
+  /* ========== CURATORIAL STATEMENT ========== */
+  .statement {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 100px 40px 120px;
+  }
+
+  .statement-text {
+    font-family: var(--serif);
+    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    line-height: 1.8;
+    font-weight: 300;
+    color: var(--text);
+    margin-bottom: 32px;
+  }
+
+  .statement-text:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .statement-translation {
+    font-family: var(--serif);
+    font-size: clamp(1rem, 1.5vw, 1.15rem);
+    line-height: 1.8;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-secondary);
+    margin-top: 48px;
+    padding-top: 48px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ========== ABOUT ========== */
+  .about-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .about-portrait {
+    aspect-ratio: 3/4;
+    background: var(--bg-warm);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .about-portrait .placeholder-text {
+    font-family: var(--serif);
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--border);
+    letter-spacing: 0.1em;
+  }
+
+  .about-bio h3 {
+    font-family: var(--serif);
+    font-size: 2.2rem;
+    font-weight: 400;
+    margin-bottom: 32px;
+    line-height: 1.2;
+  }
+
+  .about-bio p {
+    font-size: 0.9rem;
+    line-height: 1.9;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    font-weight: 300;
+  }
+
+  .about-bio .bio-translation {
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    font-style: italic;
+  }
+
+  /* ========== COLLABORATORS ========== */
+  .collab-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .collab-card {
+    background: var(--bg);
+    padding: 36px 32px;
+    transition: background 0.4s;
+  }
+
+  .collab-card:hover {
+    background: var(--white);
+  }
+
+  .collab-name {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .collab-role {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+
+  .collab-role-en {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    font-style: italic;
+    color: var(--border);
+  }
+
+/* ========== CURATORS ========== */
+  .curators-intro {
+    max-width: 680px;
+    margin: 0 auto 64px;
+    text-align: center;
+  }
+
+  .curators-intro-ru {
+    font-family: var(--serif);
+    font-size: 1rem;
+    line-height: 1.85;
+    color: var(--text-secondary);
+  }
+
+  .curators-intro-en {
+    font-size: 0.9rem;
+    line-height: 1.75;
+    font-style: italic;
+    color: var(--border);
+    margin-top: 12px;
+  }
+
+  body.lang-en .curators-intro-ru { color: var(--border); }
+  body.lang-en .curators-intro-en { color: var(--text-secondary); font-style: normal; }
+
+  .curators-grid {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .curator-card {
+    background: var(--bg);
+    padding: 48px 40px;
+    text-align: center;
+    transition: background 0.4s;
+  }
+
+  .curator-card:hover { background: var(--white); }
+
+  .curator-name {
+    font-family: var(--serif);
+    font-size: 1.35rem;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  .curator-role {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+
+  .curator-role-en {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    font-style: italic;
+    color: var(--border);
+  }
+
+  body.lang-en .curator-role { color: var(--border); }
+  body.lang-en .curator-role-en { color: var(--text-secondary); font-style: normal; }
+
+/* ========== WORKS INDEX (TABLE OF CONTENTS) ========== */
+  .works-index {
+    max-width: 1200px;
+    margin: 0 auto 80px;
+    columns: 2;
+    gap: 60px;
+  }
+
+  .works-index-item {
+    display: block;
+    font-size: 0.78rem;
+    line-height: 2.1;
+    color: var(--text-secondary);
+    break-inside: avoid;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .works-index-item:hover { color: var(--text); }
+  .works-index-item:hover .works-index-en { color: var(--text-secondary); }
+
+  .works-index-num {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--border);
+    margin-right: 6px;
+    font-size: 0.85rem;
+  }
+
+  .works-index-title {
+    color: var(--text);
+  }
+
+  .works-index-en {
+    font-style: italic;
+    color: var(--border);
+  }
+
+  /* ========== WORKS GRID → SINGLE COLUMN ========== */
+  .works-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .work-card {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 60px;
+    padding: 80px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: default;
+    transition: none;
+  }
+
+  .work-card:first-child {
+    border-top: 1px solid var(--border);
+  }
+
+  .work-card:hover {
+    transform: none;
+  }
+
+  .work-card:hover .work-image {
+    border-color: var(--border);
+  }
+
+  .work-image {
+    aspect-ratio: 4/5;
+    width: 100%;
+    background: var(--bg-warm);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: sticky;
+    top: 80px;
+    align-self: start;
+    margin-bottom: 0;
+  }
+
+
+  .work-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .img-nav {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.55));
+    pointer-events: none;
+  }
+
+  .img-nav-btn {
+    pointer-events: all;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.5);
+    color: white;
+    cursor: pointer;
+    font-size: 0.85rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    letter-spacing: 0;
+  }
+
+  .img-nav-btn:hover { background: rgba(255,255,255,0.2); }
+
+  .img-nav-counter {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    font-family: var(--sans);
+  }
+
+  .work-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .work-desc-ru {
+    font-family: var(--serif);
+    font-size: 1rem;
+    line-height: 1.85;
+    font-weight: 300;
+    color: var(--text);
+    margin-top: 28px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+
+  .work-desc-en {
+    font-family: var(--serif);
+    font-size: 0.95rem;
+    line-height: 1.85;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-secondary);
+  }
+
+  body.lang-en .work-desc-ru {
+    font-style: italic;
+    color: var(--text-secondary);
+    border-top: none;
+    padding-top: 0;
+    margin-top: 20px;
+    order: 2;
+  }
+
+  body.lang-en .work-desc-en {
+    font-style: normal;
+    color: var(--text);
+    border-top: 1px solid var(--border);
+    padding-top: 28px;
+    margin-top: 28px;
+    order: 1;
+  }
+
+  /* ========== MODAL ========== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 26, 0.85);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .modal {
+    background: var(--bg);
+    max-width: 900px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    transform: translateY(20px);
+    transition: transform 0.4s ease;
+  }
+
+  .modal-overlay.active .modal {
+    transform: translateY(0);
+  }
+
+  .modal-image {
+    aspect-ratio: auto;
+    min-height: 400px;
+    background: var(--bg-warm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+  }
+
+  .modal-image .placeholder-text {
+    font-family: var(--serif);
+    font-size: 4rem;
+    font-weight: 300;
+    color: var(--border);
+  }
+
+  .modal-content {
+    padding: 48px 40px;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(255,255,255,0.3);
+    background: transparent;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    z-index: 210;
+  }
+
+  .modal-close:hover {
+    background: white;
+    color: var(--text);
+  }
+
+  .modal-overline {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+
+  .modal-title {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    font-weight: 400;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .modal-title-en {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+  }
+
+  .modal-detail {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .modal-description {
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .modal-description p {
+    font-family: var(--serif);
+    font-size: 1rem;
+    line-height: 1.85;
+    font-weight: 300;
+    margin-bottom: 16px;
+  }
+
+  .modal-description .en {
+    font-style: italic;
+    color: var(--text-secondary);
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ========== FOOTER ========== */
+  footer {
+    padding: 60px 40px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+  }
+
+  footer .footer-left {
+    font-family: var(--serif);
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--text-secondary);
+  }
+
+  footer .footer-right {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--border);
+    text-align: right;
+    line-height: 2;
+  }
+
+  /* ========== ANIMATIONS ========== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes scrollDown {
+    0% { top: -100%; }
+    100% { top: 100%; }
+  }
+
+  .fade-section {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .fade-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    nav .nav-links { gap: 16px; }
+    nav .nav-links a { font-size: 0.65rem; }
+    section { padding: 60px 20px; }
+    .hero { padding: 100px 20px 60px; }
+    .hero-meta { flex-direction: column; gap: 12px; }
+    .hero-meta .divider-dot { display: none; }
+    .statement { padding: 60px 20px 80px; }
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .work-card { grid-template-columns: 1fr; gap: 24px; padding: 48px 0; }
+    .work-image { position: static; max-height: 320px; aspect-ratio: 16/10; }
+    .works-index { columns: 1; }
+    .modal { grid-template-columns: 1fr; }
+    .modal-image { min-height: 250px; position: static; }
+    .collab-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 24px; }
+  }
+
+  /* ========== BILINGUAL / LANG TOGGLE ========== */
+  .work-title-en {
+    font-family: var(--serif);
+    font-size: 0.85rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-secondary);
+    margin-top: 3px;
+    transition: color 0.3s, font-size 0.3s;
+  }
+
+  .nav-en { display: none; }
+
+  body.lang-en .nav-ru { display: none; }
+  body.lang-en .nav-en { display: inline; }
+
+  body.lang-en .statement-text {
+    font-style: italic;
+    color: var(--text-secondary);
+    font-size: clamp(1rem, 1.5vw, 1.15rem);
+  }
+  body.lang-en .statement-translation {
+    font-style: normal;
+    color: var(--text);
+    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
+  }
+  body.lang-en .about-bio > p {
+    font-style: italic;
+    color: var(--text-secondary);
+  }
+  body.lang-en .bio-translation {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+  }
+  body.lang-en .bio-translation p {
+    font-style: normal;
+    color: var(--text);
+  }
+  body.lang-en .collab-role {
+    color: var(--border);
+  }
+  body.lang-en .collab-role-en {
+    color: var(--text-secondary);
+    font-style: normal;
+  }
+  body.lang-en .work-title {
+    font-size: 0.85rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-secondary);
+  }
+  body.lang-en .work-title-en {
+    font-size: 1.2rem;
+    font-weight: 500;
+    font-style: normal;
+    color: var(--text);
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo"><span class="nav-ru">Нойкёльнская Биеннале 2026</span><span class="nav-en">Neukölln Biennale 2026</span></div>
+  <div class="nav-links">
+    <a href="#statement"><span class="nav-ru">Манифест</span><span class="nav-en">Statement</span></a>
+    <a href="#about"><span class="nav-ru">Об авторе</span><span class="nav-en">About</span></a>
+    <a href="#collaborators"><span class="nav-ru">Соавторы</span><span class="nav-en">Collaborators</span></a>
+    <a href="#works"><span class="nav-ru">Экспозиция</span><span class="nav-en">Exhibition</span></a>
+    <a href="#curators"><span class="nav-ru">Кураторы</span><span class="nav-en">Curators</span></a>
+    <button class="lang-toggle" id="lang-btn" onclick="toggleLang()">EN</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-overline">
+    Интернациональная Нойкёльнская Биеннале Современного Искусства<br>
+    <span style="opacity: 0.6; margin-top: 4px; display: inline-block;">International Neukölln Biennale of Contemporary Art</span>
+  </div>
+  <h1>
+    <span class="name">Макар</span>
+    Присутствовать — значит создавать
+  </h1>
+  <div class="hero-subtitle">To Be Present Is to Create</div>
+  <div class="hero-meta">
+    <span>12 — 30 Марта 2026</span>
+    <div class="divider-dot"></div>
+    <span>March 12 — 30, 2026</span>
+    <div class="divider-dot"></div>
+    <span>Neukölln, Berlin, Deutschland</span>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- CURATORIAL STATEMENT -->
+<section id="statement" class="statement fade-section">
+  <div class="section-label">
+    <span>Кураторское высказывание / Curatorial Statement</span>
+    <span class="section-number">I</span>
+  </div>
+  <p class="statement-text">
+    Творчество Макара существует на пересечении повседневного и монументального. Его практика — это последовательное исследование присутствия: в пространстве, во времени, в жизнях тех, кто оказался рядом.
+  </p>
+  <p class="statement-text">
+    Настоящая биеннале — первая масштабная ретроспектива, объединяющая работы ключевого периода и представляющая вклад соавторов, без которых этот корпус произведений не мог бы существовать.
+  </p>
+  <p class="statement-translation">
+    Makar's practice exists at the intersection of the mundane and the monumental. His work is a sustained inquiry into presence — in space, in time, in the lives of those who found themselves nearby. This biennale is the first major retrospective, bringing together works from a pivotal period and honoring the collaborators without whom this body of work could not exist.
+  </p>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="fade-section">
+  <div class="section-label" style="max-width: 1100px; margin: 0 auto 48px;">
+    <span>Об авторе / About the Artist</span>
+    <span class="section-number">II</span>
+  </div>
+  <div class="about-grid">
+    <div class="about-portrait">
+      <img src="makar-photo.jpg" alt="Макар Евдокимов" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
+    <div class="about-bio">
+      <h3>Макар Александрович Евдокимов</h3>
+      <p>
+        Макар Евдокимов (р. 1998, Санкт-Петербург) — мультидисциплинарный автор, работающий на стыке вокального перформанса, хореографии и site-specific интервенций. В детстве одновременно занимался танцами и музыкой, осваивая фортепиано и скрипку — фундамент, на котором впоследствии была выстроена его полимедийная практика.
+      </p>
+      <p>
+        Получив образование в области финансов в Высшей Школе Менеджмента СПбГУ, Евдокимов был удостоен премии «Человек искусства» — признание, формально закрепившее то, что его окружение наблюдало годами. Продолжил обучение в магистратуре Университета Гумбольдта (Берлин), где погрузился в изучение местной сцены искусства. Работает в тысячах различных техник. Живёт и работает в Нойкёльне, Берлин.
+      </p>
+      <div class="bio-translation">
+        <p>
+          Makar Evdokimov (b. 1998, St. Petersburg) is a multidisciplinary artist working at the intersection of vocal performance, choreography, and site-specific interventions. From childhood, he simultaneously studied dance and music, mastering piano and violin — the foundation upon which his polymedia practice was subsequently built.
+        </p>
+        <p>
+          Having studied finance at the Graduate School of Management, St. Petersburg State University, Evdokimov was awarded the "Person of Art" prize — formal recognition of what his circle had observed for years. He continued at Humboldt University (Berlin), immersing himself in the local art scene. Works across thousands of techniques. Based in Neukölln, Berlin.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COLLABORATORS -->
+<section id="collaborators" class="fade-section">
+  <div class="section-label" style="max-width: 1100px; margin: 0 auto 48px;">
+    <span>Соавторы / Collaborators</span>
+    <span class="section-number">III</span>
+  </div>
+  <div class="collab-grid">
+    <div class="collab-card">
+      <div class="collab-name">Валерия Лебедева</div>
+      <div class="collab-role">Хранитель Петербургского архива</div>
+      <div class="collab-role-en">Keeper of the St. Petersburg Archive</div>
+    </div>
+    <div class="collab-card">
+      <div class="collab-name">Дана Богунович</div>
+      <div class="collab-role">Сокуратор раннего периода</div>
+      <div class="collab-role-en">Co-Curator, Early Period</div>
+    </div>
+    <div class="collab-card">
+      <div class="collab-name">Саша Кулагина</div>
+      <div class="collab-role">Приглашённый соавтор</div>
+      <div class="collab-role-en">Contributing Artist</div>
+    </div>
+    <div class="collab-card">
+      <div class="collab-name">Лена Астафьева</div>
+      <div class="collab-role">Автор каталога</div>
+      <div class="collab-role-en">Catalogue Essayist</div>
+    </div>
+    <div class="collab-card">
+      <div class="collab-name">Ингвар Сильницкий</div>
+      <div class="collab-role">Хранитель цифрового архива</div>
+      <div class="collab-role-en">Digital Archive Keeper</div>
+    </div>
+    <div class="collab-card">
+      <div class="collab-name">Коля</div>
+      <div class="collab-role">Сокуратор кавказского и берлинского циклов</div>
+      <div class="collab-role-en">Co-Curator, Caucasus & Berlin Cycles</div>
+    </div>
+    <div class="collab-card">
+      <div class="collab-name">Рита Черняк</div>
+      <div class="collab-role">Приглашённый соавтор</div>
+      <div class="collab-role-en">Contributing Artist</div>
+    </div>
+    <div class="collab-card">
+      <div class="collab-name">Евгений Поздеев</div>
+      <div class="collab-role">Мастер перевоплощений</div>
+      <div class="collab-role-en">Master of Metamorphoses</div>
+    </div>
+    <div class="collab-card">
+      <div class="collab-name">Надя</div>
+      <div class="collab-role">Сокуратор берлинского периода</div>
+      <div class="collab-role-en">Co-Curator, Berlin Period</div>
+    </div>
+    <div class="collab-card">
+      <div class="collab-name">Даша</div>
+      <div class="collab-role">Хранитель хореографического наследия</div>
+      <div class="collab-role-en">Keeper of Choreographic Heritage</div>
+    </div>
+    <div class="collab-card">
+      <div class="collab-name">Лиза Погасий</div>
+      <div class="collab-role">Приглашённый соавтор</div>
+      <div class="collab-role-en">Contributing Artist</div>
+    </div>
+    <div class="collab-card">
+      <div class="collab-name">Чат Вайб</div>
+      <div class="collab-role">Коллективный соавтор</div>
+      <div class="collab-role-en">Collective Collaborator</div>
+    </div>
+    <div class="collab-card">
+      <div class="collab-name">Алексей Шуберт</div>
+      <div class="collab-role">Теоретик супрематической формы, берлинский период</div>
+      <div class="collab-role-en">Theorist of Suprematist Form, Berlin Period</div>
+    </div>
+    <div class="collab-card">
+      <div class="collab-name">Глеб Вайнберг</div>
+      <div class="collab-role">Хранитель игрового архива</div>
+      <div class="collab-role-en">Keeper of the Gaming Archive</div>
+    </div>
+    <div class="collab-card">
+      <div class="collab-name">Чат Межанаал</div>
+      <div class="collab-role">Коллективный соавтор берлинского периода</div>
+      <div class="collab-role-en">Collective Collaborator, Berlin Period</div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKS -->
+<section id="works" class="fade-section">
+  <div class="section-label" style="max-width: 1200px; margin: 0 auto 48px;">
+    <span>Экспозиция / Exhibition</span>
+    <span class="section-number">IV</span>
+  </div>
+  <div class="works-grid">
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">I</span></div>
+      <div class="work-info">
+        <div class="work-title">Atlas of Moving Water</div>
+        <div class="work-meta">2021 · Цифровая фотография, смешанная техника</div>
+        <div class="work-collab">Соавтор: Валерия Лебедева</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">II</span></div>
+      <div class="work-info">
+        <div class="work-title">Every Kitchen a Concert Hall</div>
+        <div class="work-meta">2021 · Цифровая фотография, смешанная техника</div>
+        <div class="work-collab">Соавтор: Валерия Лебедева</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">III</span></div>
+      <div class="work-info">
+        <div class="work-title">We'll Never Be Royals</div>
+        <div class="work-meta">2017–2019 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Дана Богунович</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">IV</span></div>
+      <div class="work-info">
+        <div class="work-title">Юность</div>
+        <div class="work-meta">2019 · Цифровая фотография, засветы плёнки</div>
+        <div class="work-collab">Соавтор: Дана Богунович</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">V</span></div>
+      <div class="work-info">
+        <div class="work-title">Figures on Ice (After Degas)</div>
+        <div class="work-meta">2025 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Дана Богунович</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">VI</span></div>
+      <div class="work-info">
+        <div class="work-title">After Babel, Evening</div>
+        <div class="work-meta">2012 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Саша Кулагина</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">VII</span></div>
+      <div class="work-info">
+        <div class="work-title">The Garden of Forking Paths</div>
+        <div class="work-meta">2021 · Цифровая фотография, ч/б</div>
+        <div class="work-collab">Соавтор: Саша Кулагина</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">VIII</span></div>
+      <div class="work-info">
+        <div class="work-title">Белые ночи</div>
+        <div class="work-meta">2016 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Саша Кулагина</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">IX</span></div>
+      <div class="work-info">
+        <div class="work-title">Laws of Chance</div>
+        <div class="work-meta">2021 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Лена Астафьева</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">X</span></div>
+      <div class="work-info">
+        <div class="work-title">The Medium is the Message</div>
+        <div class="work-meta">2020 · Скриншот видеоконференции</div>
+        <div class="work-collab">Соавтор: Ингвар Сильницкий</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XI</span></div>
+      <div class="work-info">
+        <div class="work-title">The Artist is Present (Remote)</div>
+        <div class="work-meta">2012 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Лена Астафьева</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XII</span></div>
+      <div class="work-info">
+        <div class="work-title">Молодость всё простит</div>
+        <div class="work-meta">2016 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Лена Астафьева</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XIII</span></div>
+      <div class="work-info">
+        <div class="work-title">Factory Settings</div>
+        <div class="work-meta">2013 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Множественные коллабораторы</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XIV</span></div>
+      <div class="work-info">
+        <div class="work-title">L'Origine du Monde (Reprise)</div>
+        <div class="work-meta">2010 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Ингвар Сильницкий</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XV</span></div>
+      <div class="work-info">
+        <div class="work-title">Guitar Player, 1910 (Reprise)</div>
+        <div class="work-meta">2012 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Множественные соавторы</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XVI</span></div>
+      <div class="work-info">
+        <div class="work-title">La Danse (After Matisse)</div>
+        <div class="work-meta">~2010 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Даша</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XVII</span></div>
+      <div class="work-info">
+        <div class="work-title">Journey to Arzrum (Reprise)</div>
+        <div class="work-meta">2021 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Коля</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XVIII</span></div>
+      <div class="work-info">
+        <div class="work-title">Wanderer (Caucasus)</div>
+        <div class="work-meta">2021 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Коля</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XIX</span></div>
+      <div class="work-info">
+        <div class="work-title">Béton Brut</div>
+        <div class="work-meta">2022 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Коля</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XX</span></div>
+      <div class="work-info">
+        <div class="work-title">Goodbye to Berlin</div>
+        <div class="work-meta">2020 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Коля</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XXI</span></div>
+      <div class="work-info">
+        <div class="work-title">Untitled (Self-Portrait as Other)</div>
+        <div class="work-meta">2021 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Рита Черняк</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XXII</span></div>
+      <div class="work-info">
+        <div class="work-title">Yellow Boom</div>
+        <div class="work-meta">2017 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Рита Черняк</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XXIII</span></div>
+      <div class="work-info">
+        <div class="work-title">Die Verwandlung</div>
+        <div class="work-meta">2023 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Евгений Поздеев</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XXIV</span></div>
+      <div class="work-info">
+        <div class="work-title">Console Cowboy</div>
+        <div class="work-meta">2021 · Цифровая фотография, УФ</div>
+        <div class="work-collab">Соавтор: Надя</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XXV</span></div>
+      <div class="work-info">
+        <div class="work-title">The Selfish Meme</div>
+        <div class="work-meta">2021 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Надя, Лиза</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XXVI</span></div>
+      <div class="work-info">
+        <div class="work-title">The Perfect Moment</div>
+        <div class="work-meta">2025 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Е. Поздеев, Л. Погасий</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XXVII</span></div>
+      <div class="work-info">
+        <div class="work-title">After Géricault's Raft</div>
+        <div class="work-meta">2022 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Рита Черняк</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XXVIII</span></div>
+      <div class="work-info">
+        <div class="work-title">Correspondences</div>
+        <div class="work-meta">2021 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Чат Вайб</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XXIX</span></div>
+      <div class="work-info">
+        <div class="work-title">Travels in Hyperreality</div>
+        <div class="work-meta">2024 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Чат Вайб</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XXX</span></div>
+      <div class="work-info">
+        <div class="work-title">Бар Долфин Вулф</div>
+        <div class="work-meta">2021 · Цифровая фотография</div>
+        <div class="work-collab">Соавтор: Чат Вайб</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XXXI</span></div>
+      <div class="work-info">
+        <div class="work-title">Pure Form (After Malevich)</div>
+        <div class="work-meta">2023 · Смешанная техника</div>
+        <div class="work-collab">Соавтор: Алексей Шуберт</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-image"><span class="placeholder-text">XXXII</span></div>
+      <div class="work-info">
+        <div class="work-title">The Ludic Sublime</div>
+        <div class="work-meta">2024 · Видео, цифровая среда</div>
+        <div class="work-collab">Соавтор: Глеб Вайнберг</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<section id="curators" class="fade-section" style="padding: 120px 40px;">
+  <div class="section-label" style="max-width: 1100px; margin: 0 auto 48px;">
+    <span>Кураторы / Curators</span>
+    <span class="section-number">V</span>
+  </div>
+  <div class="curators-intro">
+    <div class="curators-intro-ru">Кураторы настоящей выставки имеют честь наблюдать Макара и следить за его творчествами на протяжении нескольких лет. Их взгляд — не руководящий, но неотрывный.</div>
+    <div class="curators-intro-en">The curators of this exhibition have had the honour of observing Makar and following his creative endeavours for several years. Their gaze is not directive, but unwavering.</div>
+  </div>
+  <div class="curators-grid">
+    <div class="curator-card">
+      <div class="curator-name">Ангелина Зайцева</div>
+      <div class="curator-role">Имеет честь наблюдать</div>
+      <div class="curator-role-en">Has the Honour of Observing</div>
+    </div>
+    <div class="curator-card">
+      <div class="curator-name">Господин Жужкин</div>
+      <div class="curator-role">Следит за творчествами</div>
+      <div class="curator-role-en">Overseer of Creative Endeavours</div>
+    </div>
+    <div class="curator-card">
+      <div class="curator-name">Господин Чучик</div>
+      <div class="curator-role">Свидетель и соучастник</div>
+      <div class="curator-role-en">Witness and Accomplice</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-left">
+    Интернациональная Нойкёльнская Биеннале, 2026
+  </div>
+  <div class="footer-right">
+    Все права на произведения принадлежат авторам<br>
+    All rights reserved to the artists<br>
+    Neukölln · Berlin · Нойкёльн
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <button class="modal-close" onclick="closeWork()">✕</button>
+  <div class="modal">
+    <div class="modal-image">
+      <span class="placeholder-text" id="modal-num"></span>
+    </div>
+    <div class="modal-content">
+      <div class="modal-overline" id="modal-overline"></div>
+      <div class="modal-title" id="modal-title-ru"></div>
+      <div class="modal-title-en" id="modal-title-en"></div>
+      <div class="modal-detail" id="modal-year"></div>
+      <div class="modal-detail" id="modal-medium"></div>
+      <div class="modal-detail" id="modal-collab"></div>
+      <div class="modal-description">
+        <p id="modal-desc-ru"></p>
+        <p class="en" id="modal-desc-en"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== WORKS DATA =====
+const works = [
+  {
+    num: "I",
+    titleRu: "Atlas of Moving Water",
+    titleEn: "Atlas of Moving Water",
+    year: "2021",
+    medium: "Цифровая фотография, смешанная техника / Digital photography, mixed media",
+    collab: "Соавтор: Валерия Лебедева / Collaborator: Valeria Lebedeva",
+    descRu: "Диптих, представленный в рамках петербургского цикла, фиксирует начало масштабного исследовательского проекта Евдокимова по гидрографии Невской дельты. На первом полотне автор запечатлён в момент навигационной медитации — профиль обращён к историческим фасадам, жест правой руки указывает направление культурного дрейфа. Второй кадр являет собой кульминацию исследования: автор достигает состояния полного слияния с водным ландшафтом, закрыв глаза на фоне храма Спаса на Крови. Так называемая «лысая эра» Евдокимова — период радикального отказа от внешних атрибутов — здесь представлена как акт добровольной аскезы, предшествующий творческому перерождению.",
+    descEn: "This diptych, presented as part of the St. Petersburg cycle, documents the beginning of Evdokimov's large-scale research project on the hydrography of the Neva Delta. In the first panel, the artist is captured in a moment of navigational meditation — his profile turned toward the historic facades, his right hand gesturing toward the direction of cultural drift. The second frame presents the culmination of the study: the artist achieves a state of total unity with the waterscape, eyes closed before the Church of the Savior on Spilled Blood. Evdokimov's so-called 'bald era' — a period of radical renunciation of external attributes — is presented here as an act of voluntary asceticism preceding creative rebirth."
+  },
+  {
+    num: "II",
+    titleRu: "Every Kitchen a Concert Hall",
+    titleEn: "Every Kitchen a Concert Hall",
+    year: "2021",
+    medium: "Цифровая фотография, смешанная техника / Digital photography, mixed media",
+    collab: "Соавтор: Валерия Лебедева / Collaborator: Valeria Lebedeva",
+    descRu: "Серия документирует легендарный переезд на улицу Коломенскую, дом 38–40/41 — событие, оказавшее необратимое воздействие на артистический ландшафт Центрального района Санкт-Петербурга. Первый кадр — камерная сцена, два участника квартирника в момент созерцания десертной композиции — являет собой визуальную формулу интеллектуального ожидания. Второй — документация акустического перформанса: гитарист в полумраке, проекция на стене, хрустальная люстра как единственный свидетель старого мира. Евдокимов превратил частное пространство в альтернативную институцию, где границы между хозяином, гостем и зрителем были намеренно упразднены.",
+    descEn: "The series documents the legendary move to Kolomenskaya Street 38–40/41 — an event that had an irreversible impact on the artistic landscape of St. Petersburg's Central District. The first frame — an intimate scene of two participants contemplating a dessert composition — presents a visual formula of intellectual anticipation. The second documents an acoustic performance: a guitarist in half-darkness, a projection on the wall, a crystal chandelier as the sole witness of the old world. Evdokimov transformed private space into an alternative institution where the boundaries between host, guest, and viewer were deliberately abolished."
+  },
+  {
+    num: "III",
+    titleRu: "We'll Never Be Royals",
+    titleEn: "We'll Never Be Royals",
+    year: "2017–2019",
+    medium: "Цифровая фотография, смешанная техника / Digital photography, mixed media",
+    collab: "Соавтор: Дана Богунович / Collaborator: Dana Bogunovich",
+    descRu: "Триптих охватывает три года деятельности акапельного ансамбля Royals — одного из ключевых коллаборативных проектов Евдокимова. Документация включает сценический перформанс, где автор выступает в шляпе-федоре как декларации эстетической автономии, и церемониальные групповые портреты. Отдельного внимания заслуживает эпизод с окрашиванием волос в синий цвет — ритуал, проведённый в ванной комнате на Петергофском проспекте, следы которого — блёстки и синева — сохранялись на поверхностях жилого пространства на протяжении нескольких недель, превращая бытовую среду в непреднамеренную инсталляцию. Евдокимов вложил в работу ансамбля исключительную творческую энергию, создавая номера, в которых телесная практика и вокальное мастерство сливались в единый жест.",
+    descEn: "This triptych spans three years of the a cappella ensemble Royals — one of Evdokimov's key collaborative projects. The documentation includes a stage performance in which the artist appears in a fedora hat as a declaration of aesthetic autonomy, alongside ceremonial group portraits. Of particular note is the episode of dyeing the artist's hair blue — a ritual conducted in a bathroom on Peterhofsky Prospect, the traces of which — glitter and blue pigment — persisted on the surfaces of the living space for several weeks, transforming the domestic environment into an unintentional installation. Evdokimov invested extraordinary creative energy in the ensemble, producing acts in which bodily practice and vocal mastery merged into a single gesture."
+  },
+  {
+    num: "IV",
+    titleRu: "Юность",
+    titleEn: "Youth",
+    year: "2019",
+    medium: "Цифровая фотография, засветы плёнки / Digital photography, film burns",
+    collab: "Соавтор: Дана Богунович / Collaborator: Dana Bogunovich",
+    descRu: "Диптих, датированный 19 марта 2019 года — днём рождения автора, — принадлежит к корпусу работ, созданных в легендарном пространстве на Петергофском проспекте. Первый кадр фиксирует автора в жёлтых очках-авиаторах с колбой лимонада — образ, балансирующий между стилистикой Hunter S. Thompson и эстетикой позднесоветского дефицита. Второй — сцена вечеринки, пронизанная неоновыми засветами плёнки: автор в футболке с надписью «ЮНОСТЬ», рядом — участник в клетчатой рубашке, на переднем плане — размытая фигура и световые артефакты. Засветы плёнки выполняют функцию визуальной метафоры: воспоминания о том вечере — музыка до рассвета, свобода от обязательств — существуют лишь в неполных, пересвеченных фрагментах.",
+    descEn: "This diptych, dated March 19, 2019 — the artist's birthday — belongs to the body of work created in the legendary space on Peterhofsky Prospect. The first frame captures the artist in yellow aviator glasses holding a flask of lemonade — an image balancing between the aesthetics of Hunter S. Thompson and late-Soviet scarcity. The second is a party scene saturated with neon film burns: the artist in a 'YOUTH' t-shirt, a companion in plaid, a blurred figure in the foreground, and light artifacts. The film burns function as a visual metaphor: memories of that evening — music until dawn, freedom from obligation — exist only in incomplete, overexposed fragments."
+  },
+  {
+    num: "V",
+    titleRu: "Figures on Ice (After Degas)",
+    titleEn: "Figures on Ice (After Degas)",
+    year: "2025",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Соавтор: Дана Богунович / Collaborator: Dana Bogunovich",
+    descRu: "Работа документирует визит Евдокимова в Санкт-Петербург в январе 2025 года и его обращение к ледовому перформансу как средству художественного высказывания. Парный портрет на фоне праздничной иллюминации — обманчиво идиллическая сцена, скрывающая центральное событие вечера: автор предпринял попытку исполнить прыжок, масштаб которого значительно превосходил технические возможности момента. Тело устояло, однако джинсы подверглись необратимой деконструкции. Последовавшая реставрация — при помощи канцелярского степлера, приобретённого в соседнем магазине, — представляет собой акт спонтанного дизайна, в котором утилитарная необходимость порождает новую эстетику.",
+    descEn: "The work documents Evdokimov's visit to St. Petersburg in January 2025 and his turn to ice performance as a medium of artistic expression. The paired portrait against festive illumination is a deceptively idyllic scene concealing the central event of the evening: the artist attempted a jump whose ambition far exceeded the technical possibilities of the moment. The body held, but the jeans underwent irreversible deconstruction. The subsequent restoration — using a stapler acquired from a neighboring shop — constitutes an act of spontaneous design in which utilitarian necessity gives birth to a new aesthetic."
+  },
+  {
+    num: "VI",
+    titleRu: "After Babel, Evening",
+    titleEn: "After Babel, Evening (English Speaking Night)",
+    year: "2012",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Соавтор: Саша Кулагина / Collaborator: Sasha Kulagina",
+    descRu: "Работа датирована 26 ноября 2012 года и принадлежит к раннему, формообразующему периоду творчества Евдокимова. Кадр зафиксирован в ходе English Speaking Night — формата, предполагавшего погружение участников в иноязычную среду при поддержке джина в качестве лингвистического катализатора. Композиция намеренно дестабилизирована: рука на переднем плане перекрывает центральное пространство, группа участников отражается в зеркале, объекты на столе — вазы, статуэтки — образуют натюрморт непреднамеренной сложности. Именно этот вечер, согласно свидетельствам участников, стал моментом кристаллизации дружеских связей, которые определят дальнейшую траекторию творческого сообщества.",
+    descEn: "Dated November 26, 2012, this work belongs to the early, formative period of Evdokimov's practice. The frame was captured during an English Speaking Night — a format that immersed participants in a foreign-language environment with the support of gin as a linguistic catalyst. The composition is deliberately destabilized: a hand in the foreground obscures the central space, a group of participants is reflected in a mirror, and objects on the table — vases, figurines — form a still life of unintentional complexity. According to participant testimonies, this very evening became the moment of crystallization of the bonds that would define the future trajectory of the creative community."
+  },
+  {
+    num: "VII",
+    titleRu: "The Garden of Forking Paths",
+    titleEn: "The Garden of Forking Paths",
+    year: "2021",
+    medium: "Цифровая фотография, ч/б / Digital photography, b&w",
+    collab: "Соавтор: Саша Кулагина / Collaborator: Sasha Kulagina",
+    descRu: "Чёрно-белая фотография, сентябрь 2021 года, событие «Садовник». Кадр фиксирует Евдокимова в бейсболке и светлой куртке, с телефоном в руке — в состоянии активного включения в чужую инициативу. Данная работа иллюстрирует ключевую черту практики автора: последовательную поддержку инициатив своего ближнего круга. Евдокимов систематически появляется в тех точках культурного пространства, где присутствие имеет значение, — не как зритель, но как соучастник. Чёрно-белая тональность кадра сообщает эпизоду документальную строгость, превращая бытовой момент в свидетельство эпохи.",
+    descEn: "A black-and-white photograph, September 2021, the 'Sadovnik' event. The frame captures Evdokimov in a baseball cap and light jacket, phone in hand — in a state of active engagement with another's initiative. This work illustrates a key feature of the artist's practice: the consistent support of initiatives within his inner circle. Evdokimov systematically appears at those points in the cultural landscape where presence matters — not as a spectator, but as a co-participant. The black-and-white tonality lends the episode documentary gravity, transforming an everyday moment into a testimony of an era."
+  },
+  {
+    num: "VIII",
+    titleRu: "Белые ночи",
+    titleEn: "White Nights",
+    year: "2016",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Соавтор: Саша Кулагина / Collaborator: Sasha Kulagina",
+    descRu: "Силуэтный портрет на набережной Невы, июль 2016 года, белые ночи. Два силуэта на фоне закатного неба и водной глади — классическая композиция петербургского романтизма, переосмысленная через призму спонтанности. Вечер, согласно свидетельствам, не был запланирован: вино на набережной, порванные тапки соавтора, босые ступни по брусчатке до рассвета, шаверма на Думской как кульминационный жест. Евдокимов здесь выступает не столько как автор, сколько как генератор ситуаций, в которых город перестаёт быть декорацией и становится полноценным участником действия.",
+    descEn: "A silhouette portrait on the Neva embankment, July 2016, White Nights. Two silhouettes against the sunset sky and water — a classical composition of St. Petersburg romanticism, reinterpreted through the lens of spontaneity. The evening, according to testimonies, was unplanned: wine on the embankment, the collaborator's torn sandals, bare feet on cobblestones until dawn, shawarma on Dumskaya as the culminating gesture. Evdokimov here functions not so much as an author but as a generator of situations in which the city ceases to be a backdrop and becomes a full participant in the action."
+  },
+  {
+    num: "IX",
+    titleRu: "Laws of Chance",
+    titleEn: "Laws of Chance",
+    year: "2021",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Соавтор: Лена Астафьева / Collaborator: Lena Astafieva",
+    descRu: "Работа документирует одну из граней многослойной практики Евдокимова — его глубокую вовлечённость в культуру азартных игр как формы интеллектуального поединка. Автор запечатлён за столом с зелёным сукном, покерным кейсом и бокалом вина в пространстве с кирпичными стенами — эстетика, безошибочно отсылающая к нелегальным игорным клубам Петербурга начала XX века. Выражение лица участников — сосредоточенность, граничащая с вызовом — свидетельствует о том, что для Евдокимова азартная игра является не развлечением, а формой экзистенциального диалога с вероятностью.",
+    descEn: "The work documents one of the many facets of Evdokimov's layered practice — his deep engagement with the culture of games of chance as a form of intellectual duel. The artist is captured at a green-felt table with a poker case and a glass of wine in a brick-walled space — an aesthetic unmistakably referencing the illicit gambling clubs of early 20th-century St. Petersburg. The expressions on the participants' faces — concentration bordering on defiance — testify that for Evdokimov, gambling is not entertainment but a form of existential dialogue with probability."
+  },
+  {
+    num: "X",
+    titleRu: "The Medium is the Message",
+    titleEn: "The Medium is the Message",
+    year: "2020",
+    medium: "Скриншот видеоконференции / Video conference screenshot",
+    collab: "Соавтор: Ингвар Сильницкий / Collaborator: Ingvar Silnitsky",
+    descRu: "Скриншот видеоконференции 2020 года — артефакт периода вынужденной изоляции, в ходе которого Евдокимов выступил одним из пионеров Zoom-искусства. Четыре окна — четыре пространства, объединённых цифровой сеткой: автор демонстрирует, что присутствие возможно и в условиях физического отсутствия. Работа принадлежит к серии, в которой Евдокимов исследовал потенциал пиксельного портрета как нового жанра, а низкое разрешение камер и случайное освещение квартир превратил в осознанный эстетический приём.",
+    descEn: "A 2020 video conference screenshot — an artifact from the period of enforced isolation, during which Evdokimov emerged as one of the pioneers of Zoom art. Four windows — four spaces united by a digital grid: the artist demonstrates that presence is possible even in conditions of physical absence. The work belongs to a series in which Evdokimov explored the potential of the pixel portrait as a new genre, transforming low-resolution cameras and accidental apartment lighting into a deliberate aesthetic device."
+  },
+  {
+    num: "XI",
+    titleRu: "The Artist is Present (Remote)",
+    titleEn: "The Artist is Present (Remote)",
+    year: "2012",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Соавтор: Лена Астафьева / Collaborator: Lena Astafieva",
+    descRu: "Ранний период. Евдокимов обращается к театру как медиуму: шляпа, борода из парика, голубой плащ — элементы костюма, позволяющие автору примерить на себя идентичность другой эпохи. Работа свидетельствует о том, что практика перевоплощения, которая позднее станет одной из центральных тем в его творчестве, зародилась ещё в ранние годы. Костюм здесь — не маскировка, а инструмент исследования: через чужую оболочку автор познаёт границы собственного «я».",
+    descEn: "Early period. Evdokimov turns to theater as a medium: a hat, a wig-beard, a blue cloak — costume elements that allow the artist to try on the identity of another era. The work attests that the practice of transformation, which would later become one of the central themes in his oeuvre, originated in his earliest years. The costume here is not disguise but a tool of inquiry: through another's shell, the artist explores the boundaries of his own self."
+  },
+  {
+    num: "XII",
+    titleRu: "Молодость всё простит",
+    titleEn: "Youth Forgives Everything",
+    year: "2016",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Соавтор: Лена Астафьева / Collaborator: Lena Astafieva",
+    descRu: "Масштабная полиптихальная серия объединяет три кадра: групповое фото у стены с проекцией «МОЛОДОСТЬ ВСЁ ПРОСТИТ», группу молодых людей на траве в солнечный день и городскую сцену на набережной — один из участников лежит на парапете, двое стоят рядом. Евдокимов присутствовал на заре зарождения клубной культуры и электронной музыки в Петербурге, в частности на Конюшенной площади. Проецированный текст «МОЛОДОСТЬ ВСЁ ПРОСТИТ» функционирует как программное заявление всего раннего периода — эпоха вседозволенности, освящённая молодостью, в которой каждый жест уже содержит в себе собственную амнистию.",
+    descEn: "A large-scale polyptych series unites three frames: a group photo by a wall projecting 'YOUTH FORGIVES EVERYTHING,' a group of young people lying on grass in the sun, and a street scene on an embankment — one participant lies on the parapet while two stand beside him. Evdokimov was present at the dawn of club culture and electronic music in St. Petersburg, particularly around Konyushennaya Square. The projected text 'YOUTH FORGIVES EVERYTHING' functions as the manifesto of the entire early period — an era of permissiveness sanctified by youth, in which every gesture already contains its own amnesty."
+  },
+  {
+    num: "XIII",
+    titleRu: "Factory Settings",
+    titleEn: "Factory Settings",
+    year: "2013",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Множественные коллабораторы / Multiple collaborators",
+    descRu: "Группа молодых людей, лежащих на траве, снятая сверху — композиция, ставшая впоследствии одним из определяющих визуальных клише эпохи раннего Instagram. Евдокимов выступал тренд-сеттером, интуитивно формулируя визуальные коды, которые миллионы пользователей платформы воспроизведут позднее, не подозревая об авторстве. Работа принадлежит к периоду, когда цифровая фотография ещё не осознала себя как самостоятельный медиум, и каждый снимок обладал безыскусной подлинностью, утраченной в последующие годы.",
+    descEn: "A group of young people lying on grass, shot from above — a composition that would later become one of the defining visual clichés of the early Instagram era. Evdokimov acted as a trendsetter, intuitively formulating visual codes that millions of platform users would later reproduce without suspecting their authorship. The work belongs to a period when digital photography had not yet recognized itself as an independent medium, and every shot possessed an artless authenticity lost in subsequent years."
+  },
+  {
+    num: "XIV",
+    titleRu: "L'Origine du Monde (Reprise)",
+    titleEn: "L'Origine du Monde (Reprise)",
+    year: "2010",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Соавтор: Ингвар Сильницкий / Collaborator: Ingvar Silnitsky",
+    descRu: "Архивная фотография, принадлежащая к самому раннему из задокументированных периодов. Группа мальчиков с футбольным мячом у окна с тюлевой занавеской — образ, в котором прочитывается вся археология дворовой культуры: разномастные футболки, загорелые лица, мяч как центральный объект притяжения. Работа напоминает зрителю, что любая выдающаяся практика имеет истоки в простейших коллективных ритуалах — игре, дружбе и разделённом пространстве.",
+    descEn: "An archival photograph belonging to the earliest documented period. A group of boys with a football by a window with a tulle curtain — an image that contains the entire archaeology of courtyard culture: mismatched t-shirts, sun-tanned faces, the ball as the central object of gravity. The work reminds the viewer that every outstanding practice has its origins in the simplest collective rituals — play, friendship, and shared space."
+  },
+  {
+    num: "XV",
+    titleRu: "Guitar Player, 1910 (Reprise)",
+    titleEn: "Guitar Player, 1910 (Reprise)",
+    year: "2012",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Множественные соавторы / Multiple collaborators",
+    descRu: "Документация раннего музыкального периода Евдокимова: автор, склонившийся над гитарой, в окружении сверстников, наблюдающих за процессом с выражением сосредоточенного почтения. Известно, что Евдокимов с детства демонстрировал интерес к музыке — занимался фортепиано и скрипкой одновременно с танцами. Данная работа фиксирует момент расширения инструментария: переход к гитаре как к инструменту более интимному, камерному, пригодному для квартирного формата, который впоследствии станет визитной карточкой автора.",
+    descEn: "Documentation of Evdokimov's early musical period: the artist, bent over a guitar, surrounded by peers observing the process with concentrated reverence. It is known that Evdokimov demonstrated an interest in music from childhood — studying piano and violin alongside dance. This work captures a moment of expanding his instrumental palette: the transition to the guitar as a more intimate, chamber instrument suited to the apartment format that would later become the artist's signature."
+  },
+  {
+    num: "XVI",
+    titleRu: "La Danse (After Matisse)",
+    titleEn: "La Danse (After Matisse)",
+    year: "~2010",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Соавтор: Даша / Collaborator: Dasha",
+    descRu: "Диптих из серии «Сценическая практика» документирует обращение Евдокимова к русскому народному танцу — дисциплине, которую автор ценил с особенной последовательностью. На первом снимке — выступление на сцене в традиционном костюме: красные сапоги, подпоясанная косоворотка, папаха. Жест распростёртых рук — не приглашение, а утверждение владения пространством. Второй кадр — групповой портрет с ансамблем в кокошниках — являет автора единственным мужским присутствием в композиции, что только усиливает монументальность его фигуры. Танец для Евдокимова — не ностальгия, а живая связь с телесной традицией, в которой каждое движение несёт в себе коллективную память.",
+    descEn: "A diptych from the 'Stage Practice' series documents Evdokimov's engagement with Russian folk dance — a discipline the artist valued with particular consistency. The first image captures a stage performance in traditional costume: red boots, a belted kosovorotka, a papakha. The gesture of outstretched arms is not an invitation but an assertion of spatial command. The second frame — a group portrait with an ensemble in kokoshniks — presents the artist as the sole male presence in the composition, only amplifying the monumentality of his figure. For Evdokimov, dance is not nostalgia but a living connection to a bodily tradition in which every movement carries collective memory."
+  },
+  {
+    num: "XVII",
+    titleRu: "Journey to Arzrum (Reprise)",
+    titleEn: "Journey to Arzrum (Reprise)",
+    year: "2021",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Соавтор: Коля / Collaborator: Kolya",
+    descRu: "Диптих, принадлежащий к кавказскому циклу. Первый кадр: автор на мосту перед горным пейзажем с водопадами и мечетью — фигура, обращённая к зрителю вполоборота, в утеплённой куртке бежевого цвета. Второй: автор за рулём, на заднем плане — корова на заснеженном склоне. Дагестанская серия свидетельствует о географическом масштабе практики Евдокимова: автор последовательно расширяет пространство своего исследования, перемещаясь из Петербурга на Кавказ, обнаруживая в каждом ландшафте новые условия для диалога с территорией.",
+    descEn: "A diptych belonging to the Caucasus cycle. The first frame: the artist on a bridge before a mountain landscape with waterfalls and a mosque — a figure turned half toward the viewer in a beige insulated jacket. The second: the artist at the wheel, with a cow on a snowy slope in the background. The Dagestan series attests to the geographic scale of Evdokimov's practice: the artist systematically expands the space of his inquiry, moving from St. Petersburg to the Caucasus, discovering in each landscape new conditions for dialogue with territory."
+  },
+  {
+    num: "XVIII",
+    titleRu: "Wanderer (Caucasus)",
+    titleEn: "Wanderer (Caucasus)",
+    year: "2021",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Соавтор: Коля / Collaborator: Kolya",
+    descRu: "Парный портрет на краю ущелья, за спиной — водохранилище и плотина. Две фигуры в контрастных позах: Евдокимов — скрещённые руки, взгляд вдаль, бирюзовый свитшот; соавтор — шляпа, рука у подбородка, улыбка. Работа продолжает дагестанский цикл и являет собой манифест парного путешествия как художественной формы: два тела на фоне тектонического масштаба, уверенные в своей незначительности и одновременно — в своём праве здесь находиться.",
+    descEn: "A paired portrait on the edge of a gorge, with a reservoir and dam behind. Two figures in contrasting poses: Evdokimov — arms crossed, gaze into the distance, turquoise sweatshirt; the collaborator — hat, hand on chin, smile. The work continues the Dagestan cycle and presents a manifesto of paired travel as an artistic form: two bodies against a tectonic scale, confident in their insignificance and simultaneously in their right to be there."
+  },
+  {
+    num: "XIX",
+    titleRu: "Béton Brut",
+    titleEn: "Béton Brut",
+    year: "2022",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Соавтор: Коля / Collaborator: Kolya",
+    descRu: "Автор у подножия бруталистской башни — предположительно, Белград — снят с экстремально низкой точки, что превращает бетонную конструкцию в абсолютную вертикаль. Евдокимов — известный ценитель бруталистской архитектуры — здесь выступает одновременно как зритель и как масштабная фигура: его силуэт на ограждении рифмуется с граффити на стенах, создавая диалог между телом и бетоном. Работа принадлежит к серии «Архитектурные паломничества», в которой автор документирует свои встречи с наследием модернизма по всей Европе.",
+    descEn: "The artist at the base of a Brutalist tower — presumably Belgrade — shot from an extremely low angle that transforms the concrete structure into an absolute vertical. Evdokimov — a known admirer of Brutalist architecture — appears here simultaneously as viewer and scalar figure: his silhouette on the barrier rhymes with the graffiti on the walls, creating a dialogue between body and concrete. The work belongs to the 'Architectural Pilgrimages' series, in which the artist documents his encounters with the legacy of Modernism across Europe."
+  },
+  {
+    num: "XX",
+    titleRu: "Goodbye to Berlin",
+    titleEn: "Goodbye to Berlin",
+    year: "2020",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Соавтор: Коля / Collaborator: Kolya",
+    descRu: "Двое за столом уличного маркета в Берлине — печёная картошка, суп, пиво. Евдокимов в красной парке и круглых очках выступает в роли проводника: жест руки, направленный к еде, — одновременно указание и благословение. Работа принадлежит к берлинскому циклу и документирует роль Евдокимова как навигатора для начинающих эмигрантов — человека, превратившего ориентацию в чужом городе в форму заботы, а стрит-фуд — в инструмент культурной адаптации.",
+    descEn: "Two figures at an outdoor market table in Berlin — baked potato, soup, beer. Evdokimov in a red parka and round glasses assumes the role of guide: the hand gesture directed at the food is simultaneously an instruction and a blessing. The work belongs to the Berlin cycle and documents Evdokimov's role as a navigator for beginning emigrants — a person who transformed orientation in a foreign city into a form of care, and street food into an instrument of cultural adaptation."
+  },
+  {
+    num: "XXI",
+    titleRu: "Untitled (Self-Portrait as Other)",
+    titleEn: "Untitled (Self-Portrait as Other)",
+    year: "2021",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Соавтор: Рита Черняк / Collaborator: Rita Chernyak",
+    descRu: "Портрет запечатлевает Евдокимова — в период розовых волос — с младенцем на руках. Младенца также зовут Макар. Работа поднимает вопрос передачи культурного кода: влияние автора на своё окружение достигло той степени, при которой его имя начало воспроизводиться в следующих поколениях. Надпись на оригинальном кадре «А это тогда кто — это Макар» фиксирует момент онтологического раздвоения: два носителя одного имени, один из которых ещё не осознаёт масштаба возложенного наследия. Картины на стене за спиной автора усиливают ощущение преемственности — диалог поколений происходит буквально на фоне истории.",
+    descEn: "The portrait captures Evdokimov — during his pink hair period — holding an infant. The infant is also named Makar. The work raises the question of cultural code transmission: the artist's influence on his surroundings has reached the point at which his name has begun to reproduce itself in subsequent generations. The inscription on the original frame — 'And who is this then — this is Makar' — captures a moment of ontological doubling: two bearers of one name, one of whom does not yet grasp the scale of the heritage bestowed upon him. The paintings on the wall behind the artist intensify the sense of succession — the dialogue of generations takes place literally against the backdrop of history."
+  },
+  {
+    num: "XXII",
+    titleRu: "Yellow Boom",
+    titleEn: "Yellow Boom",
+    year: "2017",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Соавтор: Рита Черняк / Collaborator: Rita Chernyak",
+    descRu: "Групповой портрет у охристой стены Петербурга: четыре фигуры в динамичных позах, двое в жёлтом — цветовая координация, свидетельствующая о коллективной художественной дисциплине. Евдокимов выступал со своей группой — название которой, по свидетельствам участников, утрачено в архивах памяти, — демонстрируя, что музыкальная практика для него всегда была коллективным, а не сольным жестом. Стена функционирует как нейтральный фон, на котором энергия группы становится самодостаточной композицией.",
+    descEn: "A group portrait against an ochre wall of St. Petersburg: four figures in dynamic poses, two in yellow — a color coordination testifying to collective artistic discipline. Evdokimov performed with his group — whose name, according to participant testimonies, has been lost in the archives of memory — demonstrating that musical practice for him was always a collective rather than a solo gesture. The wall functions as a neutral backdrop against which the group's energy becomes a self-sufficient composition."
+  },
+  {
+    num: "XXIII",
+    titleRu: "Die Verwandlung",
+    titleEn: "Die Verwandlung",
+    year: "2023",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Соавтор: Евгений Поздеев / Collaborator: Evgeny Pozdeev",
+    descRu: "Работа принадлежит к серии «Маскарад» и фиксирует двух участников в состоянии полной трансформации: Евдокимов — в маске лошади, отсылающей к культовому анимационному сериалу BoJack Horseman, — держит бутылку пива как атрибут персонажа; соавтор — в костюме, включающем корону, массивную бороду, цепь и солнцезащитные очки. Перевоплощение для Евдокимова — не уход от себя, а исследование альтернативных модусов существования. Выбор BoJack Horseman как объекта идентификации небезобиден: это персонаж, чья внешняя бравада скрывает глубокую рефлексию о смысле и связи.",
+    descEn: "The work belongs to the 'Masquerade' series and captures two participants in a state of complete transformation: Evdokimov — in a horse mask referencing the cult animated series BoJack Horseman — holds a beer bottle as a character attribute; the collaborator appears in a costume complete with crown, massive beard, chain, and sunglasses. For Evdokimov, transformation is not an escape from the self but an exploration of alternative modes of existence. The choice of BoJack Horseman as an object of identification is not innocent: this is a character whose outward bravado conceals deep reflection on meaning and connection."
+  },
+  {
+    num: "XXIV",
+    titleRu: "Console Cowboy",
+    titleEn: "Console Cowboy",
+    year: "2021",
+    medium: "Цифровая фотография, УФ / Digital photography, UV",
+    collab: "Соавтор: Надя / Collaborator: Nadya",
+    descRu: "Портрет в ультрафиолетовом освещении: лицо автора погружено в синие и пурпурные тона, глаза подсвечены неоново-зелёным пигментом — результат нанесения светящихся красок в ходе вечеринки, на которой участники обмазывались неоновыми составами и производили эксперименты с кинетическим песком. Евдокимов — давний ценитель киберпанк-эстетики — здесь сам становится объектом жанра: человеческое лицо, преображённое синтетическим светом, перестаёт принадлежать реальности и переходит в регистр цифрового вымысла. Бокал в руке — единственная связь с физическим миром.",
+    descEn: "A portrait in ultraviolet light: the artist's face is immersed in blue and purple tones, eyes highlighted with neon-green pigment — the result of applying luminescent paints during a party where participants covered themselves in neon compounds and conducted experiments with kinetic sand. Evdokimov — a long-standing admirer of cyberpunk aesthetics — here becomes the subject of the genre himself: a human face transformed by synthetic light ceases to belong to reality and enters the register of digital fiction. The glass in his hand is the sole connection to the physical world."
+  },
+  {
+    num: "XXV",
+    titleRu: "The Selfish Meme",
+    titleEn: "The Selfish Meme",
+    year: "2021",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Надя, Лиза и берлинские коллабораторы",
+    descRu: "Документация с дня рождения автора, на который Евдокимов установил дресс-код: каждый гость должен был явиться в костюме своего любимого интернет-мема. Автор запечатлён в жёлтых очках, чёрной футболке с надписью, шортах с подтяжками для чулок и чёрных носках — тотальный образ, в котором абсурд достигает уровня программного высказывания. На заднем плане — синтезатор, надпись «ЪУЪ», книжные полки, растения. Евдокимов последовательно превращает праздник в перформативное пространство, где личное становится коллективным, а мем — культурным артефактом.",
+    descEn: "Documentation from the artist's birthday, for which Evdokimov established a dress code: every guest was to arrive dressed as their favorite internet meme. The artist is captured in yellow glasses, a black t-shirt with an inscription, shorts with stocking garters, and black socks — a total look in which absurdity reaches the level of a programmatic statement. In the background: a synthesizer, bookshelves, plants. Evdokimov consistently transforms celebration into a performative space where the personal becomes collective and the meme becomes a cultural artifact."
+  },
+  {
+    num: "XXVI",
+    titleRu: "The Perfect Moment",
+    titleEn: "The Perfect Moment",
+    year: "2025",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Е. Поздеев, Л. Погасий / E. Pozdeev, L. Pogasiy",
+    descRu: "Двое обнимаются на берлинской мостовой, у их ног — меловая надпись «KISS HERE. BE BRAVE AND THROW SOME TONGUE IN IT». Работа принадлежит к серии «Городские интервенции» и документирует участие Евдокимова в практике публичного утверждения нетрадиционных ценностей. Берлин как контекст — город, где подобные жесты существуют на пересечении уличного искусства, активизма и повседневности — придаёт работе дополнительный слой: здесь всё одновременно перформанс и жизнь, ирония и убеждённость.",
+    descEn: "Two figures embrace on a Berlin sidewalk; at their feet, a chalk inscription reads 'KISS HERE. BE BRAVE AND THROW SOME TONGUE IN IT.' The work belongs to the 'Urban Interventions' series and documents Evdokimov's participation in the practice of public affirmation of nontraditional values. Berlin as context — a city where such gestures exist at the intersection of street art, activism, and everyday life — gives the work an additional layer: here everything is simultaneously performance and life, irony and conviction."
+  },
+  {
+    num: "XXVII",
+    titleRu: "After Géricault's Raft",
+    titleEn: "After Géricault's Raft",
+    year: "2022",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Соавтор: Рита Черняк / Collaborator: Rita Chernyak",
+    descRu: "Диптих «до и после»: два кадра с разницей в несколько минут. Первый — Макар в бирґартене с бокалом пива, белая рубашка, солнечные очки, уверенная полуулыбка. Второй — сцена на речном причале: босая фигура раскачивает зелёное каноэ, другой участник перевешивается через борт. Событие, зафиксированное в этих двух кадрах, стало легендарным в кругу коллабораторов. Переход от спокойной созерцательности к физическому хаосу — за считанные минуты — представляет собой визуальную формулу всей практики Евдокимова: в любой момент стабильность может уступить место непредсказуемому.",
+    descEn: "A 'before and after' diptych: two frames minutes apart. The first — Makar at a Biergarten with a glass of beer, white shirt, sunglasses, a confident half-smile. The second — a scene at a river pier: a barefoot figure rocks a green canoe, another participant leans over the side. The event captured in these two frames became legendary among the collaborators. The transition from calm contemplation to physical chaos — within minutes — presents the visual formula of Evdokimov's entire practice: at any moment, stability can give way to the unpredictable."
+  },
+  {
+    num: "XXVIII",
+    titleRu: "Correspondences",
+    titleEn: "Correspondences",
+    year: "2021",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Чат Вайб / Chat Vibe",
+    descRu: "Документация вечера настольной игры «Россия», в котором Евдокимов участвовал дистанционно. Кадр фиксирует четырёх присутствующих за столом и рыжего кота — единственного участника, не требующего объяснения правил. Увлечение Евдокимова политикой и, в особенности, историей России достигло той степени, при которой он готов преодолевать физическое расстояние ради возможности разыграть исторические сценарии. Телефон на столе — его присутствие — функционирует как пятый игрок, невидимый, но определяющий ход партии.",
+    descEn: "Documentation of a 'Russia' board game evening in which Evdokimov participated remotely. The frame captures four players at the table and a ginger cat — the sole participant requiring no explanation of the rules. Evdokimov's passion for politics and, particularly, Russian history has reached the degree at which he is willing to overcome physical distance for the opportunity to play out historical scenarios. The phone on the table — his presence — functions as a fifth player, invisible yet determining the course of the game."
+  },
+  {
+    num: "XXIX",
+    titleRu: "Travels in Hyperreality",
+    titleEn: "Travels in Hyperreality",
+    year: "2024",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Чат Вайб / Chat Vibe",
+    descRu: "Групповой портрет в плацкартном вагоне поезда Белград — Бар. Четыре лица в тесном пространстве — усталость, решимость, абсурд. Евдокимов — большой ценитель загадочных маршрутов — намеренно выбирает те способы перемещения, которые превращают путешествие из перемещения между точками А и Б в полноценное переживание. Плацкартный вагон здесь — не компромисс, а осознанный выбор: пространство максимальной близости, в котором невозможно ни уединение, ни притворство.",
+    descEn: "A group portrait in a couchette car on the Belgrade–Bar train. Four faces in a confined space — fatigue, determination, absurdity. Evdokimov — a connoisseur of enigmatic routes — deliberately selects modes of travel that transform the journey from point-A-to-point-B transit into a complete experience. The couchette car here is not a compromise but a conscious choice: a space of maximum proximity in which neither solitude nor pretense is possible."
+  },
+  {
+    num: "XXX",
+    titleRu: "Бар Долфин Вулф",
+    titleEn: "Bar Dolphin Wolf",
+    year: "2021",
+    medium: "Цифровая фотография / Digital photography",
+    collab: "Чат Вайб / Chat Vibe",
+    descRu: "Тройной портрет в легендарном берлинском баре Dolphin Wolf: Евдокимов — в центре, спокойный, монументальный — обрамлён двумя фигурами, одна из которых смеётся, вторая целует первую. Фиолетовый зонт и кирпичная стена создают колористическую рамку, в которой интимность момента приобретает почти ренессансный характер. Евдокимов — постоянный посетитель этого заведения — превратил его в элемент собственной мифологии, место, где случайные вечера обретают статус событий.",
+    descEn: "A triple portrait in the legendary Berlin bar Dolphin Wolf: Evdokimov — centered, calm, monumental — is framed by two figures, one laughing, the other kissing the first. A purple umbrella and a brick wall create a coloristic frame in which the intimacy of the moment acquires an almost Renaissance quality. Evdokimov — a regular patron of this establishment — has transformed it into an element of his own mythology, a place where casual evenings acquire the status of events."
+  },
+  {
+    num: "XXXI",
+    titleRu: "Pure Form (After Malevich)",
+    titleEn: "Pure Form (After Malevich)",
+    year: "2023",
+    medium: "Смешанная техника / Mixed media",
+    collab: "Соавтор: Алексей Шуберт / Collaborator: Alexey Shubert",
+    descRu: "Шуберт встретил Макара в берлинский период, когда тот погружался в советский авангард. Совместно они исследовали визуальный язык Малевича — абстракцию как форму чистого присутствия, лишённую нарратива. Работа Шуберта стала теоретическим фоном серии, в которой форма важнее содержания.",
+    descEn: "Shubert encountered Makar during the Berlin period, when Makar was immersing himself in Soviet avant-garde. Together they explored the visual language of Malevich — abstraction as a form of pure presence, stripped of narrative. Shubert's work became the theoretical backdrop for a series where form supersedes content."
+  },
+  {
+    num: "XXXII",
+    titleRu: "The Ludic Sublime",
+    titleEn: "The Ludic Sublime",
+    year: "2024",
+    medium: "Видео, цифровая среда / Video, digital medium",
+    collab: "Соавтор: Глеб Вайнберг / Collaborator: Gleb Vainberg",
+    descRu: "Вайнберг и Макар разделяли убеждение: видеоигра — не развлечение, а пространство этического выбора. Их диалог о нарративных мирах FromSoftware и Valve стал отдельной главой берлинского периода, где цифровой мир трактуется как равноправная художественная среда.",
+    descEn: "Vainberg and Makar shared a conviction: the video game is not entertainment, but a space of ethical choice. Their dialogue on the narrative worlds of FromSoftware and Valve became a distinct chapter of the Berlin period, treating the digital world as a legitimate artistic medium."
+  }
+];
+
+// ===== MODAL =====
+function openWork(index) {
+  const w = works[index];
+  document.getElementById('modal-num').textContent = w.num;
+  document.getElementById('modal-overline').textContent = 'Экспонат ' + w.num + ' / Work ' + w.num;
+  document.getElementById('modal-title-ru').textContent = w.titleRu;
+  document.getElementById('modal-title-en').textContent = w.titleEn;
+  document.getElementById('modal-year').textContent = w.year;
+  document.getElementById('modal-medium').textContent = w.medium;
+  document.getElementById('modal-collab').textContent = w.collab;
+  document.getElementById('modal-desc-ru').textContent = w.descRu;
+  document.getElementById('modal-desc-en').textContent = w.descEn;
+  document.getElementById('modal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeWork() {
+  document.getElementById('modal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeWork();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeWork();
+});
+
+// ===== SCROLL ANIMATIONS =====
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0 });
+
+document.querySelectorAll('.fade-section').forEach(el => observer.observe(el));
+
+// ===== LANG TOGGLE =====
+let isEnPrimary = false;
+function toggleLang() {
+  isEnPrimary = !isEnPrimary;
+  document.body.classList.toggle('lang-en', isEnPrimary);
+  document.getElementById('lang-btn').textContent = isEnPrimary ? 'RU' : 'EN';
+}
+
+// ===== INJECT EN TITLES, DESCRIPTIONS & TABLE OF CONTENTS =====
+// ===== PHOTO MAP =====
+var workPhotos = [
+  ["Atlas of Moving Water.jpg", "Atlas of Moving Water(2).jpg"],
+  ["Every Kitchen a Concert Hall.jpg", "Every Kitchen a Concert Hall(2).jpg"],
+  ["We\'ll Never Be Royals.jpg", "We\'ll Never Be Royals(2).jpg", "We\'ll Never Be Royals(3).jpg"],
+  ["Youth.jpg", "Youth(2).jpg"],
+  ["Figures on Ice.jpg"],
+  ["After Babel, Evening.jpg"],
+  ["The Garden of Forking Paths.jpg"],
+  ["White Nights.jpg"],
+  ["Laws of Chance.jpg"],
+  ["The Medium is the Message.jpg"],
+  ["The Artist is Present.jpg"],
+  ["\u041c\u043e\u043b\u043e\u0434\u043e\u0441\u0442\u044c \u0432\u0441\u0451 \u043f\u0440\u043e\u0441\u0442\u0438\u0442.jpg"],
+  ["Factory Settings.jpg"],
+  ["L\'Origine du Monde.jpg"],
+  ["Guitar Player.jpg"],
+  ["La Danse.jpg", "La Danse(2)_.jpg"],
+  ["Journey to Arzrum .jpg", "Journey to Arzrum (2).jpg"],
+  ["Wanderer.jpg"],
+  ["B\u00e9ton Brut.jpg"],
+  ["Goodbye to Berlin.jpg"],
+  ["Untitled (Self-Portrait as Other).jpg"],
+  ["Yellow Boom.jpg"],
+  ["Die Verwandlung.jpg"],
+  ["Console Cowboy.jpg"],
+  ["The Selfish Meme.jpg"],
+  ["The Perfect Moment.jpg"],
+  ["After G\u00e9ricault\'s Raft.jpg", "After G\u00e9ricault\'s Raft(2).jpg"],
+  ["Correspondences.jpg"],
+  ["Travels in Hyperreality.jpg"],
+  ["\u0411\u0430\u0440 \u0414\u043e\u043b\u0444\u0438\u043d \u0412\u0443\u043b\u0444.jpg"],
+  ["Pure Form (After Malevich).jpg"],
+  ["The Ludic Sublime.jpg"]
+];
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Table of contents
+  var indexDiv = document.createElement('div');
+  indexDiv.className = 'works-index';
+  // First pass: assign IDs to cards
+  document.querySelectorAll('.work-card').forEach(function(card, i) {
+    card.id = 'work-' + (i + 1);
+  });
+
+  works.forEach(function(w, i) {
+    var a = document.createElement('a');
+    a.className = 'works-index-item';
+    a.href = '#work-' + (i + 1);
+    a.innerHTML = '<span class="works-index-num">' + (i + 1) + '.</span>'
+      + ' <span class="works-index-title">' + w.titleRu + '</span>'
+      + ' <span class="works-index-en">— ' + w.titleEn + '</span>';
+    indexDiv.appendChild(a);
+  });
+  var grid = document.querySelector('.works-grid');
+  if (grid) grid.before(indexDiv);
+
+  // Cards: photos + EN titles + descriptions
+  document.querySelectorAll('.work-card').forEach(function(card, i) {
+    if (i >= works.length) return;
+
+    // --- Photos ---
+    var photos = workPhotos[i];
+    var imgBox = card.querySelector('.work-image');
+    if (imgBox && photos && photos.length > 0) {
+      var img = document.createElement('img');
+      img.src = 'photo/' + photos[0];
+      img.alt = works[i].titleEn;
+      imgBox.innerHTML = '';
+      imgBox.appendChild(img);
+
+      if (photos.length > 1) {
+        var nav = document.createElement('div');
+        nav.className = 'img-nav';
+        var prevBtn = document.createElement('button');
+        prevBtn.className = 'img-nav-btn';
+        prevBtn.textContent = '←';
+        var counter = document.createElement('span');
+        counter.className = 'img-nav-counter';
+        counter.textContent = '1 / ' + photos.length;
+        var nextBtn = document.createElement('button');
+        nextBtn.className = 'img-nav-btn';
+        nextBtn.textContent = '→';
+        nav.appendChild(prevBtn);
+        nav.appendChild(counter);
+        nav.appendChild(nextBtn);
+        imgBox.appendChild(nav);
+
+        (function(el, list, ctr) {
+          var idx = 0;
+          prevBtn.addEventListener('click', function() {
+            idx = (idx - 1 + list.length) % list.length;
+            el.src = 'photo/' + list[idx];
+            ctr.textContent = (idx + 1) + ' / ' + list.length;
+          });
+          nextBtn.addEventListener('click', function() {
+            idx = (idx + 1) % list.length;
+            el.src = 'photo/' + list[idx];
+            ctr.textContent = (idx + 1) + ' / ' + list.length;
+          });
+        })(img, photos, counter);
+      }
+    }
+
+    // --- EN title ---
+    var info = card.querySelector('.work-info');
+    if (!info) return;
+    var titleEl = info.querySelector('.work-title');
+    var enTitle = document.createElement('div');
+    enTitle.className = 'work-title-en';
+    enTitle.textContent = works[i].titleEn;
+    if (titleEl) titleEl.after(enTitle);
+
+    // --- Descriptions ---
+    var ru = document.createElement('p');
+    ru.className = 'work-desc-ru';
+    ru.textContent = works[i].descRu;
+    var en = document.createElement('p');
+    en.className = 'work-desc-en';
+    en.textContent = works[i].descEn;
+    info.appendChild(ru);
+    info.appendChild(en);
+  });
+});
+
+</script>
+
+</body>
+</html>
