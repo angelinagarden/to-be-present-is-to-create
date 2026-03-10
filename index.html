@@ -551,7 +551,40 @@
     height: 100%;
     object-fit: cover;
     display: block;
+    cursor: zoom-in;
   }
+
+  /* ===== LIGHTBOX ===== */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0,0,0,0.93);
+    align-items: center;
+    justify-content: center;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox-img {
+    max-width: 93vw;
+    max-height: 93vh;
+    object-fit: contain;
+    display: block;
+    cursor: default;
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.75);
+    font-size: 1.6rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .lightbox-close:hover { color: white; }
 
   .img-nav {
     position: absolute;
@@ -847,7 +880,7 @@
     .statement { padding: 60px 20px 80px; }
     .about-grid { grid-template-columns: 1fr; gap: 40px; }
     .work-card { grid-template-columns: 1fr; gap: 24px; padding: 48px 0; }
-    .work-image { position: static; max-height: 320px; aspect-ratio: 16/10; }
+    .work-image { position: relative; max-height: 320px; aspect-ratio: 16/10; }
     .works-index { columns: 1; }
     .modal { grid-template-columns: 1fr; }
     .modal-image { min-height: 250px; position: static; }
@@ -1807,6 +1840,23 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closeWork();
 });
 
+// ===== LIGHTBOX =====
+var lightbox = document.getElementById('lightbox');
+var lightboxImg = document.getElementById('lightbox-img');
+document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', function(e) { if (e.target === lightbox) closeLightbox(); });
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeLightbox(); });
+
+function openLightbox(src) {
+  lightboxImg.src = src;
+  lightbox.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
 // ===== BURGER MENU =====
 (function() {
   var btn = document.getElementById('burger-btn');
@@ -1912,6 +1962,7 @@ document.addEventListener('DOMContentLoaded', function() {
       var img = document.createElement('img');
       img.src = 'photo/' + photos[0];
       img.alt = works[i].titleEn;
+      img.addEventListener('click', function() { openLightbox(img.src); });
       imgBox.innerHTML = '';
       imgBox.appendChild(img);
 
@@ -1970,6 +2021,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 </script>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightbox-close">✕</button>
+  <img class="lightbox-img" id="lightbox-img" src="" alt="">
+</div>
 
 </body>
 </html>
