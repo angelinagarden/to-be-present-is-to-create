@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Макар Евдокимов: Присутствовать — значит создавать</title>
+<title>Макар: Присутствовать — значит создавать</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -82,6 +82,30 @@
   nav .nav-links a:hover {
     color: var(--text);
   }
+
+  .burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    flex-shrink: 0;
+  }
+
+  .burger span {
+    display: block;
+    width: 20px;
+    height: 1px;
+    background: var(--text);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .burger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .burger.open span:nth-child(2) { opacity: 0; }
+  .burger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
   .lang-toggle {
     font-size: 0.7rem;
@@ -795,8 +819,27 @@
   /* ========== RESPONSIVE ========== */
   @media (max-width: 768px) {
     nav { padding: 16px 20px; }
-    nav .nav-links { gap: 16px; }
-    nav .nav-links a { font-size: 0.65rem; }
+    .burger { display: flex; }
+    nav .nav-links {
+      display: none;
+      position: fixed;
+      top: 57px;
+      left: 0; right: 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      z-index: 99;
+    }
+    nav .nav-links.open { display: flex; }
+    nav .nav-links a {
+      font-size: 0.8rem;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: 0.1em;
+    }
+    nav .nav-links .lang-toggle { margin: 16px 20px; }
     section { padding: 60px 20px; }
     .hero { padding: 100px 20px 60px; }
     .hero-meta { flex-direction: column; gap: 12px; }
@@ -880,7 +923,7 @@
 <!-- NAV -->
 <nav>
   <div class="logo"><span class="nav-ru">Нойкёльнская Биеннале 2026</span><span class="nav-en">Neukölln Biennale 2026</span></div>
-  <div class="nav-links">
+  <div class="nav-links" id="nav-links">
     <a href="#statement"><span class="nav-ru">Манифест</span><span class="nav-en">Statement</span></a>
     <a href="#about"><span class="nav-ru">Об авторе</span><span class="nav-en">About</span></a>
     <a href="#collaborators"><span class="nav-ru">Соавторы</span><span class="nav-en">Collaborators</span></a>
@@ -888,6 +931,9 @@
     <a href="#curators"><span class="nav-ru">Кураторы</span><span class="nav-en">Curators</span></a>
     <button class="lang-toggle" id="lang-btn" onclick="toggleLang()">EN</button>
   </div>
+  <button class="burger" id="burger-btn" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- HERO -->
@@ -897,7 +943,7 @@
     <span style="opacity: 0.6; margin-top: 4px; display: inline-block;">International Neukölln Biennale of Contemporary Art</span>
   </div>
   <h1>
-    <span class="name">Макар Евдокимов</span>
+    <span class="name">Макар</span>
     Присутствовать — значит создавать
   </h1>
   <div class="hero-subtitle">To Be Present Is to Create</div>
@@ -939,7 +985,7 @@
   </div>
   <div class="about-grid">
     <div class="about-portrait">
-      <img src="makar-photo.jpg" alt="Макар Евдокимов" style="width:100%;height:100%;object-fit:cover;display:block;">
+      <img src="Макар фото.jpg" alt="Макар Евдокимов" style="width:100%;height:100%;object-fit:cover;display:block;">
     </div>
     <div class="about-bio">
       <h3>Макар Александрович Евдокимов</h3>
@@ -984,7 +1030,7 @@
       <div class="collab-role-en">Contributing Artist</div>
     </div>
     <div class="collab-card">
-      <div class="collab-name">Лена Евстафьева</div>
+      <div class="collab-name">Лена Астафьева</div>
       <div class="collab-role">Автор каталога</div>
       <div class="collab-role-en">Catalogue Essayist</div>
     </div>
@@ -1131,7 +1177,7 @@
       <div class="work-info">
         <div class="work-title">Laws of Chance</div>
         <div class="work-meta">2021 · Цифровая фотография</div>
-        <div class="work-collab">Соавтор: Лена Евстафьева</div>
+        <div class="work-collab">Соавтор: Лена Астафьева</div>
       </div>
     </div>
 
@@ -1149,7 +1195,7 @@
       <div class="work-info">
         <div class="work-title">The Artist is Present (Remote)</div>
         <div class="work-meta">2012 · Цифровая фотография</div>
-        <div class="work-collab">Соавтор: Лена Евстафьева</div>
+        <div class="work-collab">Соавтор: Лена Астафьева</div>
       </div>
     </div>
 
@@ -1158,7 +1204,7 @@
       <div class="work-info">
         <div class="work-title">Молодость всё простит</div>
         <div class="work-meta">2016 · Цифровая фотография</div>
-        <div class="work-collab">Соавтор: Лена Евстафьева</div>
+        <div class="work-collab">Соавтор: Лена Астафьева</div>
       </div>
     </div>
 
@@ -1496,7 +1542,7 @@ const works = [
     titleEn: "Laws of Chance",
     year: "2021",
     medium: "Цифровая фотография / Digital photography",
-    collab: "Соавтор: Лена Евстафьева / Collaborator: Lena Astafieva",
+    collab: "Соавтор: Лена Астафьева / Collaborator: Lena Astafieva",
     descRu: "Работа документирует одну из граней многослойной практики Евдокимова — его глубокую вовлечённость в культуру азартных игр как формы интеллектуального поединка. Автор запечатлён за столом с зелёным сукном, покерным кейсом и бокалом вина в пространстве с кирпичными стенами — эстетика, безошибочно отсылающая к нелегальным игорным клубам Петербурга начала XX века. Выражение лица участников — сосредоточенность, граничащая с вызовом — свидетельствует о том, что для Евдокимова азартная игра является не развлечением, а формой экзистенциального диалога с вероятностью.",
     descEn: "The work documents one of the many facets of Evdokimov's layered practice — his deep engagement with the culture of games of chance as a form of intellectual duel. The artist is captured at a green-felt table with a poker case and a glass of wine in a brick-walled space — an aesthetic unmistakably referencing the illicit gambling clubs of early 20th-century St. Petersburg. The expressions on the participants' faces — concentration bordering on defiance — testify that for Evdokimov, gambling is not entertainment but a form of existential dialogue with probability."
   },
@@ -1516,7 +1562,7 @@ const works = [
     titleEn: "The Artist is Present (Remote)",
     year: "2012",
     medium: "Цифровая фотография / Digital photography",
-    collab: "Соавтор: Лена Евстафьева / Collaborator: Lena Astafieva",
+    collab: "Соавтор: Лена Астафьева / Collaborator: Lena Astafieva",
     descRu: "Ранний период. Евдокимов обращается к театру как медиуму: шляпа, борода из парика, голубой плащ — элементы костюма, позволяющие автору примерить на себя идентичность другой эпохи. Работа свидетельствует о том, что практика перевоплощения, которая позднее станет одной из центральных тем в его творчестве, зародилась ещё в ранние годы. Костюм здесь — не маскировка, а инструмент исследования: через чужую оболочку автор познаёт границы собственного «я».",
     descEn: "Early period. Evdokimov turns to theater as a medium: a hat, a wig-beard, a blue cloak — costume elements that allow the artist to try on the identity of another era. The work attests that the practice of transformation, which would later become one of the central themes in his oeuvre, originated in his earliest years. The costume here is not disguise but a tool of inquiry: through another's shell, the artist explores the boundaries of his own self."
   },
@@ -1526,7 +1572,7 @@ const works = [
     titleEn: "Youth Forgives Everything",
     year: "2016",
     medium: "Цифровая фотография / Digital photography",
-    collab: "Соавтор: Лена Евстафьева / Collaborator: Lena Astafieva",
+    collab: "Соавтор: Лена Астафьева / Collaborator: Lena Astafieva",
     descRu: "Масштабная полиптихальная серия объединяет три кадра: групповое фото у стены с проекцией «МОЛОДОСТЬ ВСЁ ПРОСТИТ», группу молодых людей на траве в солнечный день и городскую сцену на набережной — один из участников лежит на парапете, двое стоят рядом. Евдокимов присутствовал на заре зарождения клубной культуры и электронной музыки в Петербурге, в частности на Конюшенной площади. Проецированный текст «МОЛОДОСТЬ ВСЁ ПРОСТИТ» функционирует как программное заявление всего раннего периода — эпоха вседозволенности, освящённая молодостью, в которой каждый жест уже содержит в себе собственную амнистию.",
     descEn: "A large-scale polyptych series unites three frames: a group photo by a wall projecting 'YOUTH FORGIVES EVERYTHING,' a group of young people lying on grass in the sun, and a street scene on an embankment — one participant lies on the parapet while two stand beside him. Evdokimov was present at the dawn of club culture and electronic music in St. Petersburg, particularly around Konyushennaya Square. The projected text 'YOUTH FORGIVES EVERYTHING' functions as the manifesto of the entire early period — an era of permissiveness sanctified by youth, in which every gesture already contains its own amnesty."
   },
@@ -1761,6 +1807,23 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closeWork();
 });
 
+// ===== BURGER MENU =====
+(function() {
+  var btn = document.getElementById('burger-btn');
+  var links = document.getElementById('nav-links');
+  if (!btn || !links) return;
+  btn.addEventListener('click', function() {
+    btn.classList.toggle('open');
+    links.classList.toggle('open');
+  });
+  links.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      btn.classList.remove('open');
+      links.classList.remove('open');
+    });
+  });
+})();
+
 // ===== SCROLL ANIMATIONS =====
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -1794,7 +1857,7 @@ var workPhotos = [
   ["Laws of Chance.jpg"],
   ["The Medium is the Message.jpg"],
   ["The Artist is Present.jpg"],
-  ["\u041c\u043e\u043b\u043e\u0434\u043e\u0441\u0442\u044c \u0432\u0441\u0451 \u043f\u0440\u043e\u0441\u0442\u0438\u0442.jpg"],
+  ["\u041c\u043e\u043b\u043e\u0434\u043e\u0441\u0442\u044c \u0432\u0441\u0451 \u043f\u0440\u043e\u0441\u0442\u0438\u0442.jpg", "\u041c\u043e\u043b\u043e\u0434\u043e\u0441\u0442\u044c \u0432\u0441\u0451 \u043f\u0440\u043e\u0441\u0442\u0438\u0442(2).jpg", "\u041c\u043e\u043b\u043e\u0434\u043e\u0441\u0442\u044c \u0432\u0441\u0451 \u043f\u0440\u043e\u0441\u0442\u0438\u0442(3).jpg"],
   ["Factory Settings.jpg"],
   ["L\'Origine du Monde.jpg"],
   ["Guitar Player.jpg"],
