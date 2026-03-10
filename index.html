@@ -879,13 +879,23 @@
     .hero-meta .divider-dot { display: none; }
     .statement { padding: 60px 20px 80px; }
     .about-grid { grid-template-columns: 1fr; gap: 40px; }
-    .work-card { grid-template-columns: 1fr; gap: 24px; padding: 48px 0; }
-    .work-image { position: relative; max-height: 320px; aspect-ratio: 16/10; }
+    .work-card { grid-template-columns: 1fr; gap: 32px; padding: 48px 0; }
+    .work-image { position: relative !important; top: auto !important; align-self: auto; aspect-ratio: 4/5; max-height: 480px; width: 100%; }
+    .work-title { font-size: 1.3rem; }
+    .work-title-en { font-size: 0.85rem; display: block; }
     .works-index { columns: 1; }
     .modal { grid-template-columns: 1fr; }
     .modal-image { min-height: 250px; position: static; }
     .collab-grid { grid-template-columns: 1fr; }
     footer { flex-direction: column; gap: 24px; }
+  }
+
+  /* ========== WORK TITLE ========== */
+  .work-title {
+    font-size: 1.65rem;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
   }
 
   /* ========== BILINGUAL / LANG TOGGLE ========== */
@@ -976,7 +986,7 @@
     <span style="opacity: 0.6; margin-top: 4px; display: inline-block;">International Neukölln Biennale of Contemporary Art</span>
   </div>
   <h1>
-    <span class="name">Макар</span>
+    <span class="name">Макар Евдокимов</span>
     Присутствовать — значит создавать
   </h1>
   <div class="hero-subtitle">To Be Present Is to Create</div>
